@@ -1,11 +1,13 @@
 const express = require('express')
 const todoRouter = require('./routes/todo')
 const app = express()
+const {DateTimeFormatterMiddleware} = require('./middlewares/todo')
 
-//middlewares 
+//middlewares for handling incoming request
 app.use(express.json())
-app.use(express.urlencoded({extended : false}))
-
+app.use(express.urlencoded({extended : true}))
+//// Validate and adjust date for POST and PUT/PATCH skips for GET
+app.use(DateTimeFormatterMiddleware);
 
 
 // // routes
