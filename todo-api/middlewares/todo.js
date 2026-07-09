@@ -1,8 +1,10 @@
 exports.DateTimeFormatterMiddleware = (req, res, next) => {
   if (req.method == "GET") return next();
   const body = req.body;
-  console.log("inside the date middleware body:",body)
+  //console.log("inside the date middleware body:",body)
   const date = body.dueDate;
+  ////  if the date body is null Skip the validation and assign the default value
+  if(date == null) return next() 
   //// date months starts at 0 so add 1 for proper month
   //// first convert string date into date object
   const dateObj = new Date(date);

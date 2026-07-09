@@ -2,7 +2,6 @@ const express = require('express')
 const todoRouter = require('./routes/todo')
 const app = express()
 const {DateTimeFormatterMiddleware} = require('./middlewares/todo')
-
 //middlewares for handling incoming request
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))

@@ -9,7 +9,7 @@ async function handle_GetTodos(req, res) {
 async function handle_AddTodo(req, res) {
   const{ title, description, completed, priority, dueDate }  = req.body;
  
-console.log('before new Todo body is:',title, description, completed, priority, dueDate);
+// console.log('before new Todo body is:',title, description, completed, priority, dueDate);
   const newTodo = {
     title,
     description,
@@ -17,7 +17,7 @@ console.log('before new Todo body is:',title, description, completed, priority, 
     priority,
     dueDate,
   };
-  console.log("Before adding new todo:",newTodo)
+  // console.log("Before adding new todo:",newTodo)
   try {
     const result = await Todo.create(newTodo);
     return res.json({
