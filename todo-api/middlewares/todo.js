@@ -1,5 +1,7 @@
 exports.DateTimeFormatterMiddleware = (req, res, next) => {
   if (req.method == "GET") return next();
+  if (req.method == "PATCH") return next();
+
   const body = req.body;
   //console.log("inside the date middleware body:",body)
   const date = body.dueDate;
@@ -10,7 +12,7 @@ exports.DateTimeFormatterMiddleware = (req, res, next) => {
   const dateObj = new Date(date);
   //// if the date is not a valid format throw error to enter valid date format
   if (isNaN(dateObj)) {
-    return res.json({
+    return res.status(400).json({
       success: "Failed",
       message:
         'Invalid Date format , allowed formats :"Month/Day/Year and Year/Month/Day"',
@@ -34,7 +36,7 @@ exports.DateTimeFormatterMiddleware = (req, res, next) => {
     //// comparison body
     //// if due date is is already passed or on the same day it will not work
     if (dateToString <= currentDate)
-      return res.json({
+      return res.status(400).json({
         success: "Failed",
         message: "Due date must be a valid future date",
         Data: `Date given :${finalDate}`,
