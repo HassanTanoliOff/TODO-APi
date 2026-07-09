@@ -9,7 +9,19 @@ async function handle_GetTodos(req, res) {
 }
 async function handle_GetTodoById(req,res){
   const todoId = req.params.id;
-  
+if(todoId.length != 24) return res.status(400).json({success:'Failed',message:'Invalid Id',data:todoId})
+  try{
+    const foundTodo = await Todo.findOne({_id: todoId})
+      if(!foundTodo){
+        return res
+          .status(404)
+          .json({ success: "Failed", message: "Todo Not found", data: foundTodo });
+      }
+      return res.status(200).json({success:'Success',message:'Found Todo',data:foundTodo})
+   }
+    catch(err){
+    return res.status(500).json({success:'Failed',message:'Something went wrong',error:err.message})
+  }
   
 }
 ////////////////////////////////////////
@@ -18,15 +30,16 @@ async function handle_GetTodoById(req,res){
 async function handle_AddTodo(req, res) {
   const { title, description, completed, priority, dueDate } = req.body;
 
-  // console.log('before new Todo body is:',title, description, completed, priority, dueDate);
+   console.log('before new Todo body is:',title, description, completed, priority, dueDate);
+
   const newTodo = {
-    title,
+    title ,
     description,
     completed,
-    priority,
+    priority ,
     dueDate,
   };
-  // console.log("Before adding new todo:",newTodo)
+   console.log("Before adding new todo:",newTodo)
   try {
     const result = await Todo.create(newTodo);
     return res.status(200).json({
@@ -35,7 +48,7 @@ async function handle_AddTodo(req, res) {
       data: result,
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       success: "Failed",
       message: "Failed to add Todo",
       error: err.message,
@@ -80,7 +93,7 @@ async function handle_UpdateTodo(req, res) {
       data: `status completed:${updatedTodo.completed}`,
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       success: "Failed",
       message: "Something went wrong",
       error: err.message,
@@ -94,18 +107,19 @@ async function handle_UpdateTodo(req, res) {
 
 async function handle_DeleteTodo(req,res) {
     const todoId = req.params.id
-
+  console.log(`Todo inside get by id:${todoId}`);
     try{
-    const deletedTodo =  await Todo.findOneAndDelete({_id:todoId})
+    const deletedTodo =  await Todo.findOneAndDelete({ _id:todoId})
       return res.status(200).json({success:'Success',message:'Todo deleted' , data:deletedTodo})
     }
     catch(err){
-      return res.status(400).json({success:"failed",message:'failed to delete Todo',error:err.message})
+      return res.status(500).json({success:"failed",message:'failed to delete Todo',error:err.message})
     }
 }
 module.exports = {
   handle_GetTodos,
   handle_AddTodo,
   handle_UpdateTodo,
-  handle_DeleteTodo
+  handle_DeleteTodo,
+  handle_GetTodoById
 };

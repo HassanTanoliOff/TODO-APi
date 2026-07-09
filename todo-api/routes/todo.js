@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+// const {dateTimeValidator} = require('../validators/dateValidator')
+const {requestDataValidator} = require('../middlewares/requestDataValidator')
 const {
   handle_GetTodos,
   handle_AddTodo,
@@ -12,7 +14,7 @@ const {
 
 router.get('/',handle_GetTodos)
 router.get('/:id',handle_GetTodoById)
-router.post('/',handle_AddTodo)
+router.post("/", requestDataValidator, handle_AddTodo);
 router.patch('/:id/toggle',handle_UpdateTodo)
 router.delete('/:id',handle_DeleteTodo)
 

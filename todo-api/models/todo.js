@@ -25,7 +25,7 @@ const todoSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
       ////by default due date is 7 days from todo creation
-      default: generateNewDueDate()
+      default: generateNewDueDate
     },
   },
   { timestamps: true },

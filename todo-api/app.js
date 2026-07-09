@@ -1,20 +1,20 @@
 const express = require('express')
 const todoRouter = require('./routes/todo')
 const app = express()
-const {DateTimeFormatterMiddleware} = require('./middlewares/todo')
+// const {DateTimeFormatterMiddleware,ValidateTodoBody} = require('./middlewares/todo')
 //middlewares for handling incoming request
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 //// Validate and adjust date for POST and PUT/PATCH skips for GET
-app.use(DateTimeFormatterMiddleware);
-
+// app.use(DateTimeFormatterMiddleware);
+// app.use(ValidateTodoBody);
 
 // // routes
-app.get('/',(req,res)=>{
-      return res.end(`
-            <h1>HOME</h1>
-            <p> Go to  url: http://localhost:8001/api/todos  </p>
-            `)
+app.get('/health',(req,res)=>{
+      return res.status(200).json({
+        success: "Success",
+        message: "Application Is healthy"
+      });
 })
 app.use('/api/todo',todoRouter)
 
