@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {generateNewDueDate } = require('../utils/dateUtil')
+const { generateNewDueDate } = require("../utils/dateUtil");
 const todoSchema = new mongoose.Schema(
   {
     title: {
@@ -24,8 +24,8 @@ const todoSchema = new mongoose.Schema(
     },
     dueDate: {
       type: Date,
-      ////by default due date is 7 days from todo creation
-      default: generateNewDueDate
+
+      default: generateNewDueDate,
     },
   },
   { timestamps: true },

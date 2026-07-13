@@ -1,21 +1,19 @@
-const express = require('express')
-const router = express.Router()
-// const {dateTimeValidator} = require('../validators/dateValidator')
-const {requestDataValidator} = require('../middlewares/requestDataValidator')
+const express = require("express");
+const router = express.Router();
+
+const { requestDataValidator } = require("../middlewares/requestDataValidator");
 const {
-  handle_GetTodos,
-  handle_AddTodo,
-  handle_UpdateTodo,
-  handle_DeleteTodo,
-  handle_GetTodoById,
+  getTodos,
+  addTodo,
+  updateTodo,
+  deleteTodo,
+  getTodoById,
 } = require("../controllers/todo");
 
-
-
-router.get('/',handle_GetTodos)
-router.get('/:id',handle_GetTodoById)
-router.post("/", requestDataValidator, handle_AddTodo);
-router.patch('/:id/toggle',handle_UpdateTodo)
-router.delete('/:id',handle_DeleteTodo)
+router.get("/", getTodos);
+router.get("/:id", getTodoById);
+router.post("/", requestDataValidator, addTodo);
+router.patch("/:id/toggle", updateTodo);
+router.delete("/:id", deleteTodo);
 
 module.exports = router;
