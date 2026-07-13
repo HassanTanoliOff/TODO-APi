@@ -2,7 +2,6 @@ const { dateTimeValidator } = require("./dateTimeValidator");
 
 exports.requestDataValidator = (req, res, next) => {
   const body = req.body;
-
   const title = body.title;
 
   if (title == null || title == undefined || typeof title == "undefined")
