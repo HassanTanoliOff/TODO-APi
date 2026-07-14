@@ -11,22 +11,22 @@ async function getTodoById(req, res) {
   if (todoId.length != 24)
     return res
       .status(400)
-      .json({ success: "Failed", message: "Invalid Id", data: todoId });
+      .json({ success: false, message: "Invalid Id", data: todoId });
   try {
     const foundTodo = await Todo.findOne({ _id: todoId });
     if (!foundTodo) {
       return res.status(404).json({
-        success: "Failed",
+        success: false,
         message: "Todo Not found",
         data: foundTodo,
       });
     }
     return res
       .status(200)
-      .json({ success: "Success", message: "Found Todo", data: foundTodo });
+      .json({ success: true, message: "Found Todo", data: foundTodo });
   } catch (err) {
     return res.status(500).json({
-      success: "Failed",
+      success: false,
       message: "Something went wrong",
       error: err.message,
     });
@@ -56,13 +56,13 @@ async function addTodo(req, res) {
   try {
     const result = await Todo.create(newTodo);
     return res.status(200).json({
-      success: "Success",
+      success: true,
       message: "Successfully added new Todo",
       data: result,
     });
   } catch (err) {
     return res.status(500).json({
-      success: "Failed",
+      success: false,
       message: "Failed to add Todo",
       error: err.message,
       data: newTodo,
@@ -80,7 +80,7 @@ async function updateTodo(req, res) {
   const allowed = [0, 1, "true", "false", "True", "False"];
   if (!allowed.includes(toggle))
     return res.status(400).json({
-      success: "failed",
+      success: false,
       message: "Invalid toggle input allowed: 0/1 or true/false",
       data: `received input: ${toggle}`,
     });
@@ -92,13 +92,13 @@ async function updateTodo(req, res) {
       { returnDocument: "after" },
     );
     return res.status(200).json({
-      success: "Success",
+      success: true,
       message: "toggled todo",
       data: `status completed:${updatedTodo.completed}`,
     });
   } catch (err) {
     return res.status(500).json({
-      success: "Failed",
+      success: false,
       message: "Something went wrong",
       error: err.message,
     });
@@ -112,10 +112,10 @@ async function deleteTodo(req, res) {
     const deletedTodo = await Todo.findOneAndDelete({ _id: todoId });
     return res
       .status(200)
-      .json({ success: "Success", message: "Todo deleted", data: deletedTodo });
+      .json({ success: true , message: "Todo deleted", data: deletedTodo });
   } catch (err) {
     return res.status(500).json({
-      success: "failed",
+      success: false,
       message: "failed to delete Todo",
       error: err.message,
     });

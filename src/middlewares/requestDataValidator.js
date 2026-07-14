@@ -6,12 +6,12 @@ exports.requestDataValidator = (req, res, next) => {
 
   if (title == null || title == undefined || typeof title == "undefined")
     return res.status(400).json({
-      success: "Failed",
+      success: false,
       message: "Title is Required!",
     });
   if (title.length < 6 || title.length > 100)
     return res.status(400).json({
-      success: "Failed",
+      success: false,
       message: "Title length must be min:6 to max:100 characters long",
     });
   const description = body.description;
@@ -25,7 +25,7 @@ exports.requestDataValidator = (req, res, next) => {
   }
   if (description.length > 500)
     return res.status(400).json({
-      success: "Failed",
+      success: false,
       message: "Description is too long Max 500 words.",
     });
 
@@ -36,7 +36,7 @@ exports.requestDataValidator = (req, res, next) => {
     const toggle = [0, 1, "true", "false", "True", "False"];
     if (!toggle.includes(completed))
       return res.status(400).json({
-        success: "Failed",
+        success: false,
         message: "completed must be 0/1 or true/false only",
       });
   }
@@ -58,7 +58,7 @@ exports.requestDataValidator = (req, res, next) => {
     ];
     if (!allowedPriorities.includes(priority))
       return res.status(400).json({
-        success: "Failed",
+        success: false,
         message: "Allowed values are 'low' 'medium' 'high' only.",
       });
   }

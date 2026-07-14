@@ -24,7 +24,7 @@ exports.dateTimeValidator = (req, res, next) => {
   console.log({ finalDate });
   if (!finalDate) {
     return res.status(400).json({
-      success: "failed",
+      success: false,
       message: "incorrect Date",
       data: { finalDate },
     });
@@ -32,7 +32,7 @@ exports.dateTimeValidator = (req, res, next) => {
 
   if (isNaN(finalDate)) {
     return res.status(400).json({
-      success: "Failed",
+      success: false,
       message:
         'Invalid Date format , allowed formats :"day/month/year : 01/01/2000"',
       date: date,
@@ -47,7 +47,7 @@ exports.dateTimeValidator = (req, res, next) => {
   if (finalDate) {
     if (dateToString <= currentDate)
       return res.status(400).json({
-        success: "Failed",
+        success: false,
         message: "Due date must be a valid future date",
         Data: `Date given :${finalDate}`,
       });
