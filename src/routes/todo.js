@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { requestDataValidator } = require("../middlewares/requestDataValidator");
+const { requestDataValidator } = require("../Validators/requestDataValidator");
 const {
   getTodos,
   addTodo,

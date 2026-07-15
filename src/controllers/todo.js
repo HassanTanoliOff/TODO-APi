@@ -110,6 +110,10 @@ async function deleteTodo(req, res) {
   console.log(`Todo inside get by id:${todoId}`);
   try {
     const deletedTodo = await Todo.findOneAndDelete({ _id: todoId });
+    if (deletedTodo === null)  return res
+      .status(400)
+      .json({ success: false, message: "Unable to delete todo" });
+      
     return res
       .status(200)
       .json({ success: true , message: "Todo deleted", data: deletedTodo });
