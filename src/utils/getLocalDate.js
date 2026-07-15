@@ -1,7 +1,7 @@
 exports.getLocalDate = () => {
   const now = new Date();
   now.setDate(now.getDate() + 7);
-  const formatter = new intr.DateTimeFormat("en-GB", {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Karachi",
     day: "2-digit",
     month: "2-digit",
@@ -12,7 +12,7 @@ exports.getLocalDate = () => {
 
 exports.getValidDueDate = () => {
   const now = new Date();
-  const formatter = new intr.DateTimeFormat("en-US", {
+  const formatter = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Karachi",
     year: "numeric",
     month: "numeric",

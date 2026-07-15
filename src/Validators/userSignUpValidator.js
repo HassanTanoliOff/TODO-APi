@@ -24,7 +24,7 @@ exports.userSignUpValidator = [
   body("password")
     .notEmpty()
     .withMessage("Password is required to Signup")
-    .length({ min: 6 })
+    .isLength({ min: 6 })
     .withMessage("Password must be 6 character long."),
 
   (req, res, next) => {
