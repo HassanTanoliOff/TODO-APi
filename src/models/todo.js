@@ -27,6 +27,11 @@ const todoSchema = new mongoose.Schema(
 
       default: generateNewDueDate,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
   { timestamps: true },
 );

@@ -49,7 +49,7 @@ exports.requestDataValidator = [
       minAllowedDate.setHours(minAllowedDate.getHours() + minSetHours);
 
       if (inputDate < minAllowedDate) {
-        throw new Error("Input date must be at least 6 Hours in the future");
+        throw new Error("Input date must be at least 24 hours ahead in the future");
       }
       return true;
     })

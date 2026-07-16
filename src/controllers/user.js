@@ -1,9 +1,11 @@
 const User = require("../models/user");
+const { tokenGen } = require("../authentication/jwtTokenGenerator");
+const bcrypt = require("bcrypt");
 
-const getUsers = (req, res) => {};
+
 const signUp = async (req, res) => {
   const { userName, email, phone, password } = req.body;
-  console.log("inside controller before try");
+
   try {
     const userExists = await User.findOne({ email: email });
     console.log("inside controller before try if ");
@@ -19,26 +21,62 @@ const signUp = async (req, res) => {
       password,
     });
     const userCreated = await User.create(newUser);
-    return res
-      .status(201)
-      .json({
-        success: true,
-        message: "User Registered.",
-        data: userCreated.userName,
-      });
+    return res.status(201).json({
+      success: true,
+      message: "User Registered.",
+      data: ` ${userCreated.userName} : ${userCreated.email}`,
+    });
   } catch (err) {
     console.log("inside controller catch block");
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to Register User.",
-        error: err.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Register User.",
+      error: err.message,
+    });
+  }
+};
+
+const signIn = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email: email }).select("+password").lean();
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "user not found." });
+    
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch)
+      return res
+        .status(401)
+        .json({ success: false, message: "user not found." });
+
+    const jwtToken = tokenGen(user._id);
+    if (!jwtToken)
+      return res
+        .status(401)
+        .json({ success: false, message: "Failed to login" });
+
+    delete user.password;
+
+    return res.status(200).json({
+      success: true,
+      message: "User Logged in.",
+      token: jwtToken,
+      data: user,
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong!",
+      error: err.message,
+    });
   }
 };
 
 module.exports = {
-  getUsers,
   signUp,
+  signIn,
 };

@@ -1,6 +1,7 @@
 const { body, validationResult } = require("express-validator");
-
-exports.userSignUpValidator = [
+  
+const phoneFormat = /^\+92\d{3}\d{7}$/;
+ const userSignUpValidator = [
   body("userName")
     .trim()
     .notEmpty()
@@ -14,11 +15,12 @@ exports.userSignUpValidator = [
     .notEmpty()
     .withMessage("Email is Required.")
     .isEmail()
-    .withMessage("Email must be a valid Email")
+    .withMessage("Email is not valid.")
     .normalizeEmail(),
 
   body("phone")
-    .matches("^\+92\s\d{3}-\d{7}$")
+    .optional({values:'falsy'})
+    .matches(phoneFormat)
     .withMessage("The Phone number must be in format +92 123-1234567"),
 
   body("password")
@@ -37,7 +39,9 @@ exports.userSignUpValidator = [
         error: validationErrors.array()[0].msg,
       });
     }
-
+    
     next();
   },
 ];
+
+module.exports = userSignUpValidator;
