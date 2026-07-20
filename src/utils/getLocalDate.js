@@ -1,4 +1,4 @@
-exports.getLocalDate = () => {
+ const getLocalDate = () => {
   const now = new Date();
   now.setDate(now.getDate() + 7);
   const formatter = new Intl.DateTimeFormat("en-GB", {
@@ -10,7 +10,7 @@ exports.getLocalDate = () => {
   return formatter.format(now).replace(/\//g, "-");
 };
 
-exports.getValidDueDate = () => {
+ const getValidDueDate = () => {
   const now = new Date();
   const formatter = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Karachi",
@@ -35,3 +35,7 @@ exports.getValidDueDate = () => {
     getPart("second"),
   );
 };
+export {
+  getLocalDate,
+  getValidDueDate
+}

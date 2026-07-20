@@ -1,6 +1,6 @@
-const express = require("express");
-const todoRouter = require("./routes/todo");
-const userRouter = require ('./routes/user')
+import express from "express";
+import todoRouter from "./routes/todo.js";
+import userRouter from "./routes/user.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,5 +12,6 @@ app.get("/health", (req, res) => {
   });
 });
 app.use("/api/todo", todoRouter);
-app.use('/api/user',userRouter)
-module.exports = app;
+app.use("/api/user", userRouter);
+
+export default app;

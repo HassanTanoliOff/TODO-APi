@@ -1,11 +1,10 @@
-const { body, validationResult } = require("express-validator");
-const { getLocalDate, getValidDueDate } = require("../utils/getLocalDate");
+import { body, validationResult } from "express-validator";
+import { getLocalDate, getValidDueDate } from "../utils/getLocalDate.js";
 
 const allowedPriority = ["low", "medium", "high", "Low", "Medium", "High"];
 const dateFormatRegex = /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-\d{4}$/;
 const minSetHours = 6;
-
-exports.requestDataValidator = [
+  const requestDataValidator = [
   body("title")
     .trim()
     .notEmpty()
@@ -72,3 +71,5 @@ exports.requestDataValidator = [
     next();
   },
 ];
+
+export default requestDataValidator;

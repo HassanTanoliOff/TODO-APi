@@ -1,16 +1,16 @@
-const express = require("express");
+import express from "express";
+import verifyUser from "../middlewares/userAuthentication.js";
+import requestDataValidator from "../Validators/requestDataValidator.js";
 const router = express.Router();
-const {verifyUser} = require('../middlewares/userAuthentication')
-const { requestDataValidator } = require("../Validators/requestDataValidator");
-const {
+import {
   getTodos,
   addTodo,
   updateTodo,
   deleteTodo,
   getTodoById,
-} = require("../controllers/todo");
+} from "../controllers/todo.js";
 
-router.use(verifyUser)
+router.use(verifyUser);
 
 router.get("/", getTodos);
 router.get("/:id", getTodoById);
@@ -18,4 +18,4 @@ router.post("/", requestDataValidator, addTodo);
 router.patch("/toggle/:id", updateTodo);
 router.delete("/:id", deleteTodo);
 
-module.exports = router;
+export default router;

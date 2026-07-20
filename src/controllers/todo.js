@@ -1,7 +1,7 @@
-const { default: mongoose, isValidObjectId } = require("mongoose");
-const Todo = require("../models/todo");
-const { body, param, validationResult } = require("express-validator");
-mongoose.set('updatePipeline', true)
+import { mongoose, isValidObjectId } from "mongoose";
+import Todo from "../models/todo.js";
+import { body, param, validationResult } from "express-validator";
+mongoose.set("updatePipeline", true);
 async function getTodos(req, res) {
   const userId = req.user.id;
   const allTodos = await Todo.find({ createdBy: userId });
@@ -154,10 +154,4 @@ async function deleteTodo(req, res) {
     });
   }
 }
-module.exports = {
-  getTodos,
-  addTodo,
-  updateTodo,
-  deleteTodo,
-  getTodoById,
-};
+export { getTodos, addTodo, updateTodo, deleteTodo, getTodoById };

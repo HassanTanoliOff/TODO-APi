@@ -1,7 +1,6 @@
-const User = require("../models/user");
-const { tokenGen } = require("../authentication/jwtTokenGenerator");
-const bcrypt = require("bcrypt");
-
+import bcrypt from "bcrypt";
+import User from "../models/user.js";
+import tokenGen from "../authentication/jwtTokenGenerator.js";
 
 const signUp = async (req, res) => {
   const { userName, email, phone, password } = req.body;
@@ -39,12 +38,14 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email: email }).select("+password").lean();
+    const user = await User.findOne({ email: email })
+      .select("+password")
+      .lean();
     if (!user)
       return res
         .status(404)
         .json({ success: false, message: "user not found." });
-    
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch)
@@ -66,7 +67,6 @@ const signIn = async (req, res) => {
       token: jwtToken,
       data: user,
     });
-
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -76,7 +76,4 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = {
-  signUp,
-  signIn,
-};
+export { signUp, signIn };

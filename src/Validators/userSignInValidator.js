@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+import { body, validationResult } from "express-validator";
 
 const signInValidator = [
   body("email")
@@ -29,4 +29,4 @@ const signInValidator = [
   },
 ];
 
-module.exports = signInValidator;
+export default signInValidator;

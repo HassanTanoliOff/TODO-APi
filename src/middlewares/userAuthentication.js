@@ -1,9 +1,8 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
-const secret = process.env.jwtSecretKey;
+import dotenv from "dotenv/config"
+import jwt from "jsonwebtoken"
+const secret = process.env.JWT_SECRET_KEY;
 
-module.exports.verifyUser = (req, res, next) => {
+const verifyUser = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer "))
@@ -18,3 +17,5 @@ module.exports.verifyUser = (req, res, next) => {
     next();
   });
 };
+
+export default verifyUser;
