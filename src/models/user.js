@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema(
       minLength: 8,
       select: false,
     },
+    resetPasswordToken: {
+      type: String,
+      default: undefined,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: undefined,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -35,7 +43,6 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return;
-  console.log("inside the pre save");
   try {
     const saltTurns = 8;
     const salt = await bcrypt.genSalt(saltTurns);
