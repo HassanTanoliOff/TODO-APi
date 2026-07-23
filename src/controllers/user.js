@@ -3,9 +3,15 @@ import User from "../models/user.js";
 import tokenGen from "../authentication/jwtTokenGenerator.js";
 
 const signUp = async (req, res) => {
-  const { userName, email, phone, password } = req.body;
-
   try {
+    const { userName, email, phone, password } = req.body;
+    const profilePic = req.file;
+    // if(!profilePic) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Image is required" });
+    // }
+    const path = profilePic ? `uploads/profile/${profilePic.filename}` : undefined;
     const userExists = await User.findOne({ email: email });
     console.log("inside controller before try if ");
     if (userExists) {
@@ -18,6 +24,7 @@ const signUp = async (req, res) => {
       email,
       phone,
       password,
+      profilePic : path ?? null
     });
     const userCreated = await User.create(newUser);
     return res.status(201).json({
@@ -47,7 +54,7 @@ const signIn = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Email or password is incorrect." });
 
-        console.log(user)
+    console.log(user);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res
@@ -61,6 +68,7 @@ const signIn = async (req, res) => {
         .json({ success: false, message: "Failed to login" });
 
     delete user.password;
+    user.profileUrl = `http://localhost:8080/src/${user.profilePic}` 
 
     return res.status(200).json({
       success: true,

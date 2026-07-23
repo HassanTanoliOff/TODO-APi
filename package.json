@@ -23,7 +23,9 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.4",
     "multer": "^2.2.0",
-    "nodemailer": "^9.0.3"
+    "nodemailer": "^9.0.3",
+    "path": "^0.12.7",
+    "url": "^0.11.4"
   },
   "allowScripts": {
     "bcrypt@6.0.0": true

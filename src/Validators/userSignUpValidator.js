@@ -1,4 +1,5 @@
 import { body, validationResult } from "express-validator";
+import fs from "fs";
 const phoneFormat = /^\+92\d{3}\d{7}$/;
 const userSignUpValidator = [
   body("userName")
@@ -11,6 +12,7 @@ const userSignUpValidator = [
     .withMessage("User name can't be too long."),
 
   body("email")
+    .trim()
     .notEmpty()
     .withMessage("Email is Required.")
     .isEmail()
@@ -18,11 +20,13 @@ const userSignUpValidator = [
     .normalizeEmail(),
 
   body("phone")
+    .trim()
     .optional({ values: "falsy" })
     .matches(phoneFormat)
     .withMessage("The Phone number must be in format +92 123-1234567"),
 
   body("password")
+    .trim()
     .notEmpty()
     .withMessage("Password is required to Signup")
     .isLength({ min: 6 })
@@ -32,6 +36,11 @@ const userSignUpValidator = [
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {
+      if(req.file) {
+        fs.unlink(req.file.path, err => {
+          if(err) console.error(err)
+        })
+      }
       return res.status(400).json({
         success: false,
         message: "Failed to SignUp",
