@@ -1,32 +1,34 @@
-const Todo = require("../models/todo");
-
+import { mongoose, isValidObjectId } from "mongoose";
+import Todo from "../models/todo.js";
+import { body, param, validationResult } from "express-validator";
+mongoose.set("updatePipeline", true);
 async function getTodos(req, res) {
-
-  const allTodos = await Todo.find({ completed: true });
-
+  const userId = req.user.id;
+  const allTodos = await Todo.find({ createdBy: userId });
+  if (allTodos.length === 0)
+    return res.status(200).json("No Todos created yet.");
   return res.status(200).json(allTodos);
 }
 async function getTodoById(req, res) {
   const todoId = req.params.id;
-  if (todoId.length != 24)
-    return res
-      .status(400)
-      .json({ success: "Failed", message: "Invalid Id", data: todoId });
+  const userId = req.user.id;
+
+  if (!mongoose.isValidObjectId(todoId))
+    return res.status(400).json({ success: false, message: "Invalid  Id" });
   try {
-    const foundTodo = await Todo.findOne({ _id: todoId });
+    const foundTodo = await Todo.findOne({ _id: todoId, createdBy: userId });
     if (!foundTodo) {
       return res.status(404).json({
-        success: "Failed",
+        success: false,
         message: "Todo Not found",
-        data: foundTodo,
       });
     }
     return res
       .status(200)
-      .json({ success: "Success", message: "Found Todo", data: foundTodo });
+      .json({ success: true, message: "Found Todo", data: foundTodo });
   } catch (err) {
     return res.status(500).json({
-      success: "Failed",
+      success: false,
       message: "Something went wrong",
       error: err.message,
     });
@@ -36,14 +38,7 @@ async function getTodoById(req, res) {
 async function addTodo(req, res) {
   const { title, description, completed, priority, dueDate } = req.body;
 
-  console.log(
-    "before new Todo body is:",
-    title,
-    description,
-    completed,
-    priority,
-    dueDate,
-  );
+  const userId = req.user.id;
 
   const newTodo = {
     title,
@@ -51,18 +46,19 @@ async function addTodo(req, res) {
     completed,
     priority,
     dueDate,
+    createdBy: userId,
   };
   console.log("Before adding new todo:", newTodo);
   try {
     const result = await Todo.create(newTodo);
     return res.status(200).json({
-      success: "Success",
+      success: true,
       message: "Successfully added new Todo",
       data: result,
     });
   } catch (err) {
     return res.status(500).json({
-      success: "Failed",
+      success: false,
       message: "Failed to add Todo",
       error: err.message,
       data: newTodo,
@@ -71,34 +67,55 @@ async function addTodo(req, res) {
 }
 
 async function updateTodo(req, res) {
-  const todoId = req.params.id;
-  let toggle = req.query.completed;
-  console.log(
-    `inside the body of toggle value:${toggle} type :${typeof toggle}`,
-  );
-
-  const allowed = [0, 1, "true", "false", "True", "False"];
-  if (!allowed.includes(toggle))
-    return res.status(400).json({
-      success: "failed",
-      message: "Invalid toggle input allowed: 0/1 or true/false",
-      data: `received input: ${toggle}`,
-    });
-  console.log(`toggle to bool value:${toggle}, Type:${typeof toggle}`);
   try {
+    const validations = [
+      param("id")
+        .trim()
+        .notEmpty()
+        .withMessage("Todo Id is required")
+        .custom((value) => {
+          if (!mongoose.isValidObjectId(value)) {
+            throw new Error("invalid id");
+          }
+          return true;
+        })
+        .withMessage("In Valid Id"),
+    ];
+
+    for (let validation of validations) {
+      await validation.run(req);
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: errors.array()[0].msg,
+      });
+    }
+
+    const todoId = req.params.id;
+    const userId = req.user.id;
+
     const updatedTodo = await Todo.findOneAndUpdate(
-      { _id: todoId },
-      { $set: { completed: toggle } },
+      { _id: todoId, createdBy: userId },
+      [{ $set: { completed: { $not: "$completed" } } }],
       { returnDocument: "after" },
     );
+    if (!updatedTodo) {
+      return res.status(404).json({
+        success: false,
+        message: "Todo not found",
+      });
+    }
     return res.status(200).json({
-      success: "Success",
+      success: true,
       message: "toggled todo",
       data: `status completed:${updatedTodo.completed}`,
     });
   } catch (err) {
     return res.status(500).json({
-      success: "Failed",
+      success: false,
       message: "Something went wrong",
       error: err.message,
     });
@@ -107,24 +124,34 @@ async function updateTodo(req, res) {
 
 async function deleteTodo(req, res) {
   const todoId = req.params.id;
+  const userId = req.user.id;
   console.log(`Todo inside get by id:${todoId}`);
+
+  if (!mongoose.isValidObjectId(todoId)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid Id.",
+    });
+  }
   try {
-    const deletedTodo = await Todo.findOneAndDelete({ _id: todoId });
+    const deletedTodo = await Todo.findOneAndDelete({
+      _id: todoId,
+      createdBy: userId,
+    });
+    if (deletedTodo === null)
+      return res
+        .status(400)
+        .json({ success: false, message: "Unable to delete todo" });
+
     return res
       .status(200)
-      .json({ success: "Success", message: "Todo deleted", data: deletedTodo });
+      .json({ success: true, message: "Todo deleted", data: deletedTodo });
   } catch (err) {
     return res.status(500).json({
-      success: "failed",
+      success: false,
       message: "failed to delete Todo",
       error: err.message,
     });
   }
 }
-module.exports = {
-  getTodos,
-  addTodo,
-  updateTodo,
-  deleteTodo,
-  getTodoById,
-};
+export { getTodos, addTodo, updateTodo, deleteTodo, getTodoById };

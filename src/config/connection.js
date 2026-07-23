@@ -1,16 +1,13 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
+import "dotenv/config";
+import mongoose from "mongoose";
 
-const DBconnect = process.env.connectionString;
+const dbConnect = process.env.MDB_CONNECTION;
 
-async function mdbConnection() {
+export default async function mdbConnection() {
   try {
-    await mongoose.connect(DBconnect);
+    await mongoose.connect(dbConnect);
     console.log("Connected to MongoDB");
   } catch (err) {
     console.log({ message: `Failed to connect to DB Error:${err.message}` });
   }
 }
-
-module.exports = mdbConnection;

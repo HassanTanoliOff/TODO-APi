@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { generateNewDueDate } = require("../utils/dateUtil");
+import mongoose from "mongoose";
+import generateNewDueDate from "../utils/dateUtil.js";
 const todoSchema = new mongoose.Schema(
   {
     title: {
@@ -27,10 +27,15 @@ const todoSchema = new mongoose.Schema(
 
       default: generateNewDueDate,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
   { timestamps: true },
 );
 
 const Todo = mongoose.model("todo", todoSchema);
 
-module.exports = Todo;
+export default Todo;
